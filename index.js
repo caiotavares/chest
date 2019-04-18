@@ -1,11 +1,31 @@
 const request = require('request-promise-native');
 const cheerio = require('cheerio');
+const fs = require('fs');
 
 const URI = 'http://www.tesouro.fazenda.gov.br/tesouro-direto-precos-e-taxas-dos-titulos'
 const options = {
   uri: URI,
   transform: (body) => {
     return cheerio.load(body)
+  }
+}
+
+function write(file, content) {
+  let stream = fs.createWriteStream(file);
+  stream.once('open', (fd) => {
+    stream.write(content)
+    stream.end();
+  })
+}
+
+function processArguments(data) {
+  let content = JSON.stringify(data);
+  if (process.argv[2] == 'file') {
+    let file = process.argv[3]
+    write(file, content)
+  }
+  else if (process.argv[2] == 'out') {
+    console.log(content)
   }
 }
 
@@ -48,4 +68,4 @@ request(options)
   .then($ => extract($))
   .then(r => sort(r))
   .then(r => combine(r))
-  .then(r => console.log(r))
+  .then(r => processArguments(r))
