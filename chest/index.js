@@ -24,8 +24,8 @@ function processArguments(data) {
     let file = process.argv[3]
     write(file, content)
   }
-  else if (process.argv[2] == 'out') {
-    console.log(content)
+  else {
+    console.log(content);
   }
 }
 
