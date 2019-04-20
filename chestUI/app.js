@@ -1,16 +1,30 @@
 const express = require('express');
-const fs = require('fs');
+const db = require('./db/local');
 
 const app = express();
 const port = 3000;
 
+function error(status, body) {
+  console.log('Error: ' + body);
+  let error = new Error(body);
+  error.status = status;
+  throw error;
+}
+
+function handle(req, res) {
+  try {
+    let from = req.query.from;
+    if (!from) { error(400) }
+    db.load(from)
+      .then(data => res.send(data))
+      .catch(e => error(500, e))
+  }
+  catch (err) {
+    res.status(err.status || 500).send(err.message)
+  }
+}
+
 app.use(express.static(__dirname + '/public'))
+app.get('/api/data', handle)
 
-app.get('/api/data', (req, res) => {
-  let reader = fs.createReadStream( '/Users/caio.tavares/dev/personal/chest/data/04/19/1555643179');
-  reader.on('open', () => {
-    reader.pipe(res);
-  });
-})
-
-app.listen(port, () => console.log('chest server started...'))
+app.listen(port, () => console.log('chest server started...'));

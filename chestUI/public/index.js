@@ -9,7 +9,7 @@ let chart = new Chart(context, {
   options: {}
 });
 
-function load() {
+function load(from, to) {
   return fetch('/api/data')
     .then(res => res.json());
 }

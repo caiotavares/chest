@@ -33,6 +33,17 @@ function sort(data) {
   return data.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
 }
 
+function clean(data) {
+  return data.map((v) => {
+    return {
+      name: v.name,
+      date: v.date,
+      buyPrice: Number.parseFloat(v.buyPrice.replace('.', '').replace('R$', '').replace(',', '.')),
+      sellPrice: Number.parseFloat(v.sellPrice.replace('.', '').replace('R$', '').replace(',', '.'))
+    }
+  })
+}
+
 function combine(data) {
   let result = [];
   for (let i = 0; i < data.length - 1; i++) {
@@ -68,4 +79,5 @@ request(options)
   .then($ => extract($))
   .then(r => sort(r))
   .then(r => combine(r))
+  .then(r => clean(r))
   .then(r => processArguments(r))
