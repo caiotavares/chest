@@ -35,12 +35,12 @@ function sort(data) {
 
 function clean(data) {
   return data.map((v) => {
-    return {
-      name: v.name,
-      date: v.date,
+    return Object.assign(v, {
+      buyInterest: Number.parseFloat(v.buyInterest.replace(',', '.')),
+      sellInterest: Number.parseFloat(v.sellInterest.replace(',', '.')),
       buyPrice: Number.parseFloat(v.buyPrice.replace('.', '').replace('R$', '').replace(',', '.')),
       sellPrice: Number.parseFloat(v.sellPrice.replace('.', '').replace('R$', '').replace(',', '.'))
-    }
+    })
   })
 }
 
@@ -51,6 +51,8 @@ function combine(data) {
       result.push({
         name: data[i].name,
         date: data[i].date,
+        buyInterest: data[i].buyInterest || data[i + 1].buyInterest,
+        sellInterest: data[i].sellInterest || data[i + 1].sellInterest,
         buyPrice: data[i].buyPrice || data[i + 1].buyPrice,
         sellPrice: data[i].sellPrice || data[i + 1].sellPrice
       });
@@ -67,7 +69,8 @@ function extract($) {
       result[i] = {
         name: $(v).children('.listing0').text(),
         date: $(values[0]).text(),
-        interest: $(values[1]).text(),
+        buyInterest: values.length == 4 ? $(values[1]).text() : undefined,
+        sellInterest: values.length == 3 ? $(values[1]).text() : undefined,
         buyPrice: values.length == 4 ? $(values[3]).text() : undefined,
         sellPrice: values.length == 3 ? $(values[2]).text() : undefined
       }

@@ -1,28 +1,29 @@
 const context = document.getElementById('chest-chart').getContext('2d');
 
-let chart = new Chart(context, {
+const chart = new Chart(context, {
   type: 'line',
   data: {
-    labels: ['18/04/2019', '19/04/2019'],
+    labels: [],
     datasets: []
   },
   options: {}
 });
 
-function load(from, to) {
-  return fetch('/api/data')
+function toDate(t) {
+  let date = new Date(t * 1000);
+  return date.toLocaleString('pt-br');
+}
+
+function load(from) {
+  return fetch('/api/data?from=' + from)
     .then(res => res.json());
 }
 
-load()
+let t = 1555986600;
+
+load(t)
   .then(data => {
-    data.forEach(d => {
-      chart.data.datasets.push({
-        label: d.name,
-        // backgroundColor: 'rgb(255, 99, 132)',
-        // borderColor: 'rgb(255, 99, 132)',
-        data: [d.sellPrice, d.buyPrice]
-      })
-    })
+    chart.data.datasets = data.datasets;
+    chart.data.labels = data.labels.map(d => toDate(d));
     chart.update();
   });

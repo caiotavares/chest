@@ -5,7 +5,7 @@ _collect() {
   local results_path="/Users/caio.tavares/dev/personal/chest/data/"
   local file="$results_path/$now"
   mkdir -p $results_path
-  /usr/local/bin/node /Users/caio.tavares/dev/personal/chest/index.js file $file
+  /usr/local/bin/node /Users/caio.tavares/dev/personal/chest/chest/index.js file $file
 }
 
 _collect

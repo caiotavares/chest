@@ -15,7 +15,7 @@ function handle(req, res) {
   try {
     let from = req.query.from;
     if (!from) { error(400) }
-    db.load(from)
+    db.load(from.toString())
       .then(data => res.send(data))
       .catch(e => error(500, e))
   }
